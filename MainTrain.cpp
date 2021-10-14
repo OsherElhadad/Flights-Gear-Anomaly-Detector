@@ -1,7 +1,7 @@
 //OSHER THE KING//
 #include <iostream>
 #include "anomaly_detection_util.h"
-// Yossi is the king
+// HELLO WORLD!
 using namespace std;
 
 bool wrong(float val, float expected){
