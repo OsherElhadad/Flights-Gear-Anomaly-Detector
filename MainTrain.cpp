@@ -1,7 +1,7 @@
-//OSHER THE KING//
+//Project
 #include <iostream>
 #include "anomaly_detection_util.h"
-// Yossi the lion.
+
 using namespace std;
 
 bool wrong(float val, float expected){
