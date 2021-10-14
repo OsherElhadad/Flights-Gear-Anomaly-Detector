@@ -15,8 +15,8 @@ float avg(float* x, int size){
 float var(float* x, int size){
     float sum, sumPow;
     for (int i = 0; i < size; ++i) {
-        sum = x[i];
-        sumPow = x[i] * x[i];
+        sum += x[i];
+        sumPow += x[i] * x[i];
     }
 	float mui = (1.0/size) * sum;
     float result = (1.0/size) * sumPow - mui * mui;
