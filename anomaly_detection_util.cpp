@@ -7,8 +7,14 @@
 #include <math.h>
 #include "anomaly_detection_util.h"
 
+//Returns the average of the array's members
 float avg(float* x, int size){
-	return 0;
+    float sum = 0;
+    //Add the array's members to the sum
+    for (int i = 0; i < size; ++i) {
+        sum += x[i];
+    }
+    return sum/size;
 }
 
 // returns the variance of X and Y
@@ -24,14 +30,18 @@ float var(float* x, int size){
 }
 
 // returns the covariance of X and Y
-float cov(float* x, float* y, int size){
-	return 0;
+float cov(float* x, float* y, int size) {
+    float c[size];
+    //Multiply the vectors
+    for (int i = 0; i < size;i++) {
+        c[i] = x[i] * y[i];
+    }
+    return avg(c,size) - avg(x,size) * avg(y,size);
 }
-
 
 // returns the Pearson correlation coefficient of X and Y
 float pearson(float* x, float* y, int size){
-	return 0;
+	return cov(x,y,size)/(sqrt(var(x,size)) * sqrt(var(y,size)));
 }
 
 // performs a linear regression and returns the line equation
