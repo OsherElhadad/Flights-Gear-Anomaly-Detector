@@ -34,20 +34,43 @@ float pearson(float* x, float* y, int size){
 	return 0;
 }
 
+// fills the x and y arrays with points array.
+void fill_x_and_y_arrays(Point** points, float* x, float* y, int size){
+    for (int i = 0; i < size; i++){
+        x[i] = points[i]->getX();
+        y[i] = points[i]->getY();
+    }
+}
+
 // performs a linear regression and returns the line equation
 Line linear_reg(Point** points, int size){
 
-	return Line(0,0);
+    // fills x and y arrays from point.
+    float* x = new float[size];
+    float* y = new float[size];
+    fill_x_and_y_arrays(points, x, y, size);
+
+    // a = cov(x,y) / var(x)
+    int a = cov(x, y, size) / var(x, size);
+
+    // b =  y - ax
+    int b = avg(y, size) - a * avg(x, size);
+	return Line(a, b);
 }
 
 // returns the deviation between point p and the line equation of the points
 float dev(Point p,Point** points, int size){
-	return 0;
+	return dev(p, linear_reg(points, size));
 }
 
 // returns the deviation between point p and the line
 float dev(Point p,Line l){
-	return 0;
+    float yOfLine = l.f(p.getX());
+    float yOfPoint = p.getY();
+
+    // it is the |f(x) - y| (f is the line, and y is the y of point).
+    return abs(yOfLine - yOfPoint);
+
 }
 
 
