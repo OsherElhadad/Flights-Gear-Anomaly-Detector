@@ -1,7 +1,7 @@
 /*
- * animaly_detection_util.cpp
+ * animaly_detection_util.h
  *
- * Author: write your ID and name here
+ * Author: Yossi Maatook, 208641472
  */
 
 #ifndef ANOMALYDETECTORUTIL_H_
@@ -43,16 +43,6 @@ public:
 
     // constructor
 	Point(float x, float y): x(x), y(y) {}
-
-    // x axis getter
-    float getX() {
-        return x;
-    }
-
-    // y axis getter
-    float getY() {
-        return y;
-    }
 };
 
 // performs a linear regression and returns the line equation

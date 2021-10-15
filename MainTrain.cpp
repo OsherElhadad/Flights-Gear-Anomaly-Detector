@@ -1,7 +1,7 @@
 /*
  * animaly_detection_util.cpp
  *
- * Author: write your ID and name here
+ * Author: Yossi Maatook, 208641472
  */
 
 #include <iostream>

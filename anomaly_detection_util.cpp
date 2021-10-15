@@ -1,7 +1,7 @@
 /*
  * animaly_detection_util.cpp
  *
- * Author: write your ID and name here
+ * Author: Author: Yossi Maatook, 208641472
  */
 
 #include <math.h>
@@ -56,8 +56,8 @@ float pearson(float* x, float* y, int size) {
 // fills the x and y arrays with points array
 void fill_x_and_y_arrays(Point** points, float* x, float* y, int size) {
     for (int i = 0; i < size; i++) {
-        x[i] = points[i]->getX();
-        y[i] = points[i]->getY();
+        x[i] = points[i]->x;
+        y[i] = points[i]->y;
     }
 }
 
@@ -84,11 +84,15 @@ float dev(Point p, Point** points, int size) {
 
 // returns the deviation between point p and the line
 float dev(Point p, Line l) {
-    float yOfLine = l.f(p.getX());
-    float yOfPoint = p.getY();
+    float yOfLine = l.f(p.x);
+    float yOfPoint = p.y;
 
     // it is the |f(x) - y| (f is the line, and y is the y of point)
-    return abs(yOfLine - yOfPoint);
+    if(yOfLine > yOfPoint) {
+        return yOfLine - yOfPoint;
+    } else {
+        return yOfPoint - yOfLine;
+    }
 }
 
 
