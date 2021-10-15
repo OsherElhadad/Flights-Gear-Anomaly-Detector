@@ -13,7 +13,7 @@ float avg(float* x, int size){
 
 // returns the variance of X and Y
 float var(float* x, int size){
-    float sum, sumPow;
+    float sum = 0, sumPow = 0;
     for (int i = 0; i < size; ++i) {
         sum += x[i];
         sumPow += x[i] * x[i];
