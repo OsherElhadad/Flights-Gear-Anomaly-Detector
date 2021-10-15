@@ -28,8 +28,12 @@ float var(float* x, int size){
 }
 
 // returns the covariance of X and Y
-float cov(float* x, float* y, int size){
-	return 0;
+float cov(float* x, float* y, int size) {
+    float c[size];
+    for (int i = 0; i < size;i++) {
+        c[i] = x[i] * y[i];
+    }
+    return avg(c,size) - avg(x,size) * avg(y,size);
 }
 
 
