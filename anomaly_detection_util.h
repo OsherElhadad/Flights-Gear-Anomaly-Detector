@@ -2,6 +2,7 @@
  * animaly_detection_util.h
  *
  * Author: Yossi Maatook, 208641472
+ * Author: Osher Elhadad, 318969748
  */
 
 #ifndef ANOMALYDETECTORUTIL_H_

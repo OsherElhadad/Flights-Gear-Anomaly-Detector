@@ -1,7 +1,8 @@
 /*
  * animaly_detection_util.cpp
  *
- * Author: Author: Yossi Maatook, 208641472
+ * Author: Yossi Maatook, 208641472
+ * Author: Osher Elhadad, 318969748
  */
 
 #include <math.h>
@@ -9,6 +10,11 @@
 
 // returns the average of the array's members
 float avg(float* x, int size) {
+    // checks if the array size is a positive number
+    if(size <= 0) {
+        throw "Size must be positive!";
+    }
+
     float sum = 0;
 
     // add the array's members to the sum
@@ -20,6 +26,11 @@ float avg(float* x, int size) {
 
 // returns the variance of X
 float var(float* x, int size) {
+    // checks if the array size is a positive number
+    if(size <= 0) {
+        throw "Size must be positive!";
+    }
+
     float sumPow = 0;
 
     // sums the array's member's pows
@@ -35,6 +46,11 @@ float var(float* x, int size) {
 
 // returns the covariance of X and Y
 float cov(float* x, float* y, int size) {
+    // checks if the array size is a positive number
+    if(size <= 0) {
+        throw "Size must be positive!";
+    }
+
     float c[size];
 
     // multiply the vectors
@@ -50,7 +66,7 @@ float cov(float* x, float* y, int size) {
 float pearson(float* x, float* y, int size) {
 
     // pearson formula
-	return cov(x, y, size) / (sqrt(var(x, size)) * sqrt(var(y, size)));
+	return cov(x, y, size) / (sqrtf(var(x, size)) * sqrt(var(y, size)));
 }
 
 // fills the x and y arrays with points array
@@ -63,14 +79,25 @@ void fill_x_and_y_arrays(Point** points, float* x, float* y, int size) {
 
 // performs a linear regression and returns the line equation
 Line linear_reg(Point** points, int size) {
+    float epsilon = powf(10,-10);
+    // checks if the array size is a positive number
+    if(size <= 0) {
+        throw "Size must be positive!";
+    }
 
     // fills x and y arrays from point
     float x[size];
     float y[size];
     fill_x_and_y_arrays(points, x, y, size);
 
-    // a = cov(x,y) / var(x)
-    float a = cov(x, y, size) / var(x, size);
+    float xVar = var(x, size), a;
+
+    // in case of vertical line
+    if(xVar <= epsilon) {
+        a = INFINITY;
+    } else {
+        a = cov(x, y, size) / xVar;
+    }
 
     // b =  y - ax
     float b = avg(y, size) - a * avg(x, size);
@@ -79,6 +106,10 @@ Line linear_reg(Point** points, int size) {
 
 // returns the deviation between point p and the line equation of the points
 float dev(Point p, Point** points, int size) {
+    // checks if the array size is a positive number
+    if(size <= 0) {
+        throw "Size must be positive!";
+    }
 	return dev(p, linear_reg(points, size));
 }
 
