@@ -1,8 +1,7 @@
 /*
  * animaly_detection_util.cpp
  *
- * Author: Yossi Maatook, 208641472
- * Author: Osher Elhadad, 318969748
+ * Author: Author: Yossi Maatook, 208641472
  */
 
 #include <math.h>
