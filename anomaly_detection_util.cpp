@@ -1,7 +1,8 @@
 /*
  * animaly_detection_util.cpp
  *
- * Author: Author: Yossi Maatook, 208641472
+ * Author:Yossi Maatook, 208641472
+ * Author:Osher Elhadad, 318969748
  */
 
 #include <math.h>
@@ -9,6 +10,7 @@
 
 // returns the average of the array's members
 float avg(float* x, int size) {
+
     // checks if the array size is a positive number
     if(size <= 0) {
         throw "Size must be positive!";
@@ -25,6 +27,7 @@ float avg(float* x, int size) {
 
 // returns the variance of X
 float var(float* x, int size) {
+
     // checks if the array size is a positive number
     if(size <= 0) {
         throw "Size must be positive!";
@@ -45,6 +48,7 @@ float var(float* x, int size) {
 
 // returns the covariance of X and Y
 float cov(float* x, float* y, int size) {
+
     // checks if the array size is a positive number
     if(size <= 0) {
         throw "Size must be positive!";
@@ -79,6 +83,7 @@ void fill_x_and_y_arrays(Point** points, float* x, float* y, int size) {
 // performs a linear regression and returns the line equation
 Line linear_reg(Point** points, int size) {
     float epsilon = powf(10,-10);
+
     // checks if the array size is a positive number
     if(size <= 0) {
         throw "Size must be positive!";
@@ -105,6 +110,7 @@ Line linear_reg(Point** points, int size) {
 
 // returns the deviation between point p and the line equation of the points
 float dev(Point p, Point** points, int size) {
+
     // checks if the array size is a positive number
     if(size <= 0) {
         throw "Size must be positive!";
