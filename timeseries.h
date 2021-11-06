@@ -66,13 +66,17 @@ public:
     // getter for the headers names
     const vector<string>& getHeaders() const;
 
-    // getter for the numbers in the received line number
+    // getter for the numbers in the received line number, using vector
     // in case of incorrect row number, throws an exception
-    const vector<float>* getRow(int rowNum) const;
+    const vector<float>* getVectorRow(int rowNum) const;
 
     // getter for the received header name's data
     // in case of incorrect row number, throws an exception
     const vector<float>& getHeaderColumn(const string& head) const;
+
+    // getter for the numbers in the received line number, using map
+    // in case of incorrect row number, throws an exception
+    const std::map<string,float>* getMapRow(int rowNum) const;
 };
 
 #endif /* TIMESERIES_H_ */
