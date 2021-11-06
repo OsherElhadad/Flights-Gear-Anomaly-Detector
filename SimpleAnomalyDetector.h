@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <string.h>
 #include <math.h>
+#include <map>
+#include <memory>
 
 struct correlatedFeatures{
     string feature1,feature2;  // names of the correlated features
@@ -28,6 +30,8 @@ public:
     vector<correlatedFeatures> getNormalModel(){
         return cf;
     }
+
+    float maxThreshold(const Line& l, const unique_ptr<vector<unique_ptr<Point>>>& points, long size) const;
 
 };
 

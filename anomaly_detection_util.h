@@ -8,6 +8,9 @@
 #ifndef ANOMALYDETECTORUTIL_H_
 #define ANOMALYDETECTORUTIL_H_
 
+#include <memory>
+#include <vector>
+
 // returns the average of the array's members
 float avg(float* x, int size);
 
@@ -48,6 +51,9 @@ public:
 
 // performs a linear regression and returns the line equation
 Line linear_reg(Point** points, int size);
+
+// performs a linear regression and returns the line equation
+Line linear_reg(const std::unique_ptr<std::vector<std::unique_ptr<Point>>>& points, int size);
 
 // returns the deviation between point p and the line equation of the points
 float dev(Point p, Point** points, int size);
