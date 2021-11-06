@@ -14,24 +14,29 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts){
             }
         }
         if (!correlatedIndex.empty() && maxP > threshold) {
-            auto arrP = make_unique<vector<unique_ptr<Point>>>();
+            Point ** arrP = new Point*[it->second.size()];
             auto floatVec2 = dataMap.find(correlatedIndex)->second;
             for (int i = 0; i < it->second.size(); ++i) {
-                (*arrP)[i] = make_unique<Point>(it->second[i], floatVec2[i]);
+                arrP[i] = new Point(it->second[i], floatVec2[i]);
             }
             Line l = linear_reg(arrP, it->second.size());
             float maxT = SimpleAnomalyDetector::maxThreshold(l, arrP, it->second.size());
             struct correlatedFeatures correlatedF = {it->first, correlatedIndex, maxP,
                     linear_reg(arrP, it->second.size()), (float(1.1) * maxT)};
             cf.push_back(correlatedF);
+
+            for (int i = 0; i < it->second.size(); ++i) {
+                delete arrP[i];
+            }
+            delete[] arrP;
         }
     }
 }
 
-float SimpleAnomalyDetector::maxThreshold(const Line& l, const unique_ptr<vector<unique_ptr<Point>>>& points, long size) const {
+float SimpleAnomalyDetector::maxThreshold(const Line& l, Point** points, long size) const {
     float max = 0;
     for (long j = 0; j < size; j++) {
-        float d = dev(*(*points)[j], l);
+        float d = dev(*points[j], l);
         if (d > max) {
             max = d;
         }
@@ -51,6 +56,7 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts){
                 repoVec.push_back(anomalyReport);
             }
         }
+        delete rowI;
     }
     return repoVec;
 }
