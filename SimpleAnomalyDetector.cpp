@@ -1,14 +1,5 @@
 #include "SimpleAnomalyDetector.h"
 
-SimpleAnomalyDetector::SimpleAnomalyDetector() {
-
-}
-
-SimpleAnomalyDetector::~SimpleAnomalyDetector() {
-
-}
-
-
 void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts){
     auto dataMap = ts.getMap();
     for (map<string, vector<float>>::iterator it = dataMap.begin(); it != dataMap.end(); ++it) {
@@ -22,7 +13,7 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts){
                 correlatedIndex = secIt->first;
             }
         }
-        if (!correlatedIndex.empty()) {
+        if (!correlatedIndex.empty() && maxP > threshold) {
             auto arrP = make_unique<vector<unique_ptr<Point>>>();
             auto floatVec2 = dataMap.find(correlatedIndex)->second;
             for (int i = 0; i < it->second.size(); ++i) {

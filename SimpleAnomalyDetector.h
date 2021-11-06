@@ -20,9 +20,10 @@ struct correlatedFeatures{
 
 class SimpleAnomalyDetector:public TimeSeriesAnomalyDetector{
     vector<correlatedFeatures> cf;
+    float threshold;
 public:
-    SimpleAnomalyDetector();
-    virtual ~SimpleAnomalyDetector();
+    SimpleAnomalyDetector() : threshold(0.9) {};
+    virtual ~SimpleAnomalyDetector() = default;
 
     virtual void learnNormal(const TimeSeries& ts);
     virtual vector<AnomalyReport> detect(const TimeSeries& ts);
@@ -31,6 +32,11 @@ public:
         return cf;
     }
 
+    void setThreshold(float _threshold){
+        threshold = _threshold;
+    }
+
+protected:
     float maxThreshold(const Line& l, const unique_ptr<vector<unique_ptr<Point>>>& points, long size) const;
 
 };
