@@ -77,14 +77,6 @@ void fill_x_and_y_arrays(Point** points, float* x, float* y, int size) {
     }
 }
 
-// fills the x and y arrays with points array
-void fill_x_and_y_arrays(const std::unique_ptr<std::vector<std::unique_ptr<Point>>>& points, float* x, float* y, int size) {
-    for (int i = 0; i < size; i++) {
-        x[i] = (*points)[i]->x;
-        y[i] = (*points)[i]->y;
-    }
-}
-
 // performs a linear regression and returns the line equation
 Line linear_reg(Point** points, int size) {
     float epsilon = powf(10,-10);
@@ -110,33 +102,6 @@ Line linear_reg(Point** points, int size) {
     // b =  y - ax
     float b = avg(y, size) - a * avg(x, size);
 	return Line(a, b);
-}
-
-// performs a linear regression and returns the line equation
-Line linear_reg(const std::unique_ptr<std::vector<std::unique_ptr<Point>>>& points, int size) {
-    float epsilon = powf(10,-10);
-    // checks if the array size is a positive number
-    if(size <= 0) {
-        throw "Size must be positive!";
-    }
-
-    // fills x and y arrays from point
-    float x[size];
-    float y[size];
-    fill_x_and_y_arrays(points, x, y, size);
-
-    float xVar = var(x, size), a;
-
-    // in case of vertical line
-    if(xVar <= epsilon) {
-        a = INFINITY;
-    } else {
-        a = cov(x, y, size) / xVar;
-    }
-
-    // b =  y - ax
-    float b = avg(y, size) - a * avg(x, size);
-    return Line(a, b);
 }
 
 // returns the deviation between point p and the line equation of the points
