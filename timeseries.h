@@ -56,7 +56,7 @@ public:
             columnNum = 0;
             lineNum++;
         }
-        this->rowsNum = lineNum;
+        this->rowsNum = lineNum - 1;
         file.close();
 	}
 
@@ -77,6 +77,8 @@ public:
     // getter for the numbers in the received line number, using map
     // in case of incorrect row number, throws an exception
     const std::map<string,float>* getMapRow(int rowNum) const;
+
+    int getRowNumber() const;
 };
 
 #endif /* TIMESERIES_H_ */
