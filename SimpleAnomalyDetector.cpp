@@ -1,12 +1,13 @@
+#include <iostream>
 #include "SimpleAnomalyDetector.h"
 
 void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts){
     auto dataMap = ts.getMap();
-    for (map<string, vector<float>>::iterator it = dataMap.begin(); it != dataMap.end(); ++it) {
+    for (auto it = dataMap.begin(); it != dataMap.end(); ++it) {
         float maxP = 0;
-        string correlatedIndex = "";
-        map<string, vector<float>>::iterator nextIt = it;
-        for (map<string, vector<float>>::iterator secIt = ++nextIt; secIt != dataMap.end(); ++secIt) {
+        string correlatedIndex;
+        auto nextIt = it;
+        for (auto secIt = ++nextIt; secIt != dataMap.end(); ++secIt) {
             float p = pearson(&it->second[0], &secIt->second[0], it->second.size());
             if (abs(p) > maxP) {
                 maxP = p;
@@ -14,7 +15,7 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts){
             }
         }
         if (!correlatedIndex.empty() && maxP > threshold) {
-            Point ** arrP = new Point*[it->second.size()];
+            auto** arrP = new Point*[it->second.size()];
             auto floatVec2 = dataMap.find(correlatedIndex)->second;
             for (int i = 0; i < it->second.size(); ++i) {
                 arrP[i] = new Point(it->second[i], floatVec2[i]);
@@ -47,9 +48,9 @@ float SimpleAnomalyDetector::maxThreshold(const Line& l, Point** points, long si
 vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts){
     auto dataMap = ts.getMap();
     vector<AnomalyReport> repoVec;
-    for (long i = 0; i < dataMap.size() - 1; ++i) {
+    for (long i = 0; i < ts.getRowNumber(); ++i) {
         auto rowI = ts.getMapRow(i);
-        for (vector<correlatedFeatures>::iterator it = cf.begin(); it != cf.end(); ++it) {
+        for (auto it = cf.begin(); it != cf.end(); ++it) {
             unique_ptr<Point> point = make_unique<Point>(rowI->find(it->feature1)->second, rowI->find(it->feature2)->second);
             if (dev(*point, it->lin_reg) > it->threshold) {
                 AnomalyReport anomalyReport(it->feature1 + "-" +it->feature2, i + 1);
