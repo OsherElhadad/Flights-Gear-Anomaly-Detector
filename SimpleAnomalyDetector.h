@@ -37,7 +37,7 @@ public:
     }
 
 protected:
-    float maxThreshold(const Line& l, const unique_ptr<vector<unique_ptr<Point>>>& points, long size) const;
+    float maxThreshold(const Line& l, Point** points, long size) const;
 
 };
 
