@@ -51,11 +51,12 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts){
     for (long i = 0; i < ts.getRowNumber(); ++i) {
         auto rowI = ts.getMapRow(i);
         for (auto it = cf.begin(); it != cf.end(); ++it) {
-            unique_ptr<Point> point = make_unique<Point>(rowI->find(it->feature1)->second, rowI->find(it->feature2)->second);
+            Point* point = new Point(rowI->find(it->feature1)->second, rowI->find(it->feature2)->second);
             if (dev(*point, it->lin_reg) > it->threshold) {
                 AnomalyReport anomalyReport(it->feature1 + "-" +it->feature2, i + 1);
                 repoVec.push_back(anomalyReport);
             }
+            delete point;
         }
         delete rowI;
     }
