@@ -53,4 +53,8 @@ const std::map<string, float>* TimeSeries::getMapRow(int rowNum) const {
     return rowMap;
 }
 
+int TimeSeries::getRowNumber() const{
+    return this->rowsNum;
+}
+
 
