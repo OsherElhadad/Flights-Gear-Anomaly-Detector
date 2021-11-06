@@ -23,7 +23,7 @@ class SimpleAnomalyDetector:public TimeSeriesAnomalyDetector{
     float threshold;
 public:
     SimpleAnomalyDetector() : threshold(0.9) {};
-    virtual ~SimpleAnomalyDetector() = default;
+    SimpleAnomalyDetector(float _threshold) : threshold(_threshold) {};
 
     virtual void learnNormal(const TimeSeries& ts);
     virtual vector<AnomalyReport> detect(const TimeSeries& ts);
