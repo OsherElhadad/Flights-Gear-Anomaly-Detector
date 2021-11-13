@@ -87,4 +87,21 @@ const std::map<string, float>* TimeSeries::getMapRow(long rowNum) const {
     return rowMap;
 }
 
+// getter for header's data by the header name
+vector<float> TimeSeries::getHeaderDataByName(const string& header) const {
+    return this->map.at(header);
+}
+
+// getter for header's data by the header column number
+vector<float> TimeSeries::getHeaderDataByNum(int num) const {
+    return this->map.at(this->headers.at(num));
+}
+
+// getter for the number of columns
+int TimeSeries::getNumOfColumns() const{
+    return this->getHeaders().size();
+}
+
+
+
 
