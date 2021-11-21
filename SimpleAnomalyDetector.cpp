@@ -71,16 +71,16 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts) {
         auto rowI = ts.getMapRow(i);
 
         // loop that go over the correlatedFeatures and check if there is anomalies
-        for (int j = 0; j < cf.size(); ++j) {
+        for (auto it = cf.begin(); it != cf.end(); ++it) {
 
             // create a point from the 2 correlated features and their float values in that row
-            auto point = new Point(rowI->find(cf[j].feature1)->second, rowI->find(cf[j].feature2)->second);
+            auto point = new Point(rowI->find(it->feature1)->second, rowI->find(it->feature2)->second);
 
             // check if the dev between the point and the line of these cf is bigger then the threshold.
-            if (dev(*point, cf[j].lin_reg) > cf[j].threshold) {
+            if (dev(*point, it->lin_reg) > it->threshold) {
 
                 // add an anomaly report of these features to the vector of the reports
-                AnomalyReport anomalyReport(cf[j].feature1 + "-" + cf[j].feature2, i + 1);
+                AnomalyReport anomalyReport(it->feature1 + "-" + it->feature2, i + 1);
                 repoVec.push_back(anomalyReport);
             }
             delete point;
