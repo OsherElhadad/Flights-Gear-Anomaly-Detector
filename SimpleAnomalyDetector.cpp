@@ -10,26 +10,23 @@
 // learnNormal - gets a TimeSeries and adds the correlatedFeatures to cf
 void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts) {
 
-    // get a map of names of columns (keys)  and a vector of floats (values)
-    auto dataMap = ts.getMap();
-
     // loop that go over the all map items (features) and compare them to the next items
-    for (auto it = dataMap.begin(); it != dataMap.end(); ++it) {
+    for (int i = 0; i < ts.getNumOfColumns(); i++) {
+        vector<float> currentColumn = ts.getHeaderDataByNum(i);
         float maxP = 0;
         string correlatedIndex;
-        auto nextIt = it;
-        int size = (int)it->second.size();
+        int size = currentColumn.size();
 
         // loop that find the feature that has the max correlation with the current feature
-        for (auto secIt = ++nextIt; secIt != dataMap.end(); ++secIt) {
+        for (int j = i + 1; j  < ts.getNumOfColumns(); j++) {
 
             // check the correlation between the two columns
-            float p = pearson(&it->second[0], &secIt->second[0], size);
+            float p = pearson(&currentColumn[0], &ts.getHeaderDataByNum(j)[0], size);
 
             // save the max correlation in maxP and saves the name of the second feature at correlatedIndex
             if (abs(p) > maxP) {
                 maxP = p;
-                correlatedIndex = secIt->first;
+                correlatedIndex = ts.getHeaders().at(j);
             }
         }
 
@@ -38,14 +35,15 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts) {
             auto** arrP = new Point*[size];
 
             // get a line from the 2 vectors of the 2 features and fill arrP with points from the vectors
-            Line l = SimpleAnomalyDetector::vectorsToLine(arrP, it->second,
-                                                           dataMap.find(correlatedIndex)->second, size);
+            Line l = SimpleAnomalyDetector::vectorsToLine(arrP, currentColumn,
+                                                          ts.getHeaderDataByName(correlatedIndex), size);
 
             // get the max threshold between the line and the points in arrP
             float maxT = SimpleAnomalyDetector::maxThreshold(l, arrP, size);
 
             // add the correlatedFeatures to cf
-            correlatedFeatures correlatedF = {it->first, correlatedIndex, maxP, l, (float(1.1) * maxT)};
+            correlatedFeatures correlatedF = {ts.getHeaders().at(i), correlatedIndex, maxP, l,
+                                              (float(1.2) * maxT)};
             cf.push_back(correlatedF);
 
             // free the all points and the array of them
@@ -59,9 +57,6 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts) {
 
 // detect - gets a TimeSeries and checks if there are anomalies from the cf
 vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts) {
-
-    // get a map of names of columns (keys)  and a vector of floats (values)
-    auto& dataMap = ts.getMap();
     vector<AnomalyReport> repoVec;
 
     // loop that go over the rows in the map

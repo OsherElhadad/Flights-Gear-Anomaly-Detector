@@ -46,6 +46,15 @@ public:
     long getRowNumber() const {
         return this->rowsNum;
     }
+
+    // getter for header's data by the header name
+    vector<float> getHeaderDataByName(const string& header) const;
+
+    // getter for header's data by the header column number
+    vector<float> getHeaderDataByNum(int num) const;
+
+    // getter for the number of columns
+    int getNumOfColumns() const;
 };
 
 #endif /* TIMESERIES_H_ */
