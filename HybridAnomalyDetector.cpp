@@ -21,7 +21,7 @@ void HybridAnomalyDetector::addIfCorrelate(float maxPearson, Point** points, siz
 
         // add the correlatedFeatures to cf
         correlatedFeatures correlatedF = {f1, f2, maxPearson, Line(0, 0), circle.getCenter(),
-                                          (float(1.2) * circle.getRadius())};
+                                          (float(1.1) * circle.getRadius())};
         cf.push_back(correlatedF);
     }
 }
