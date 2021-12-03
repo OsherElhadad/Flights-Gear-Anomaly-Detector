@@ -1,12 +1,28 @@
-
+/*
+ * HybridAnomalyDetector.cpp
+ *
+ * Author: Yossi Maatook, 208641472
+ * Author: Osher Elhadad, 318969748
+ */
 #include "HybridAnomalyDetector.h"
 
-HybridAnomalyDetector::HybridAnomalyDetector() {
-	// TODO Auto-generated constructor stub
-
+// return if there is an anomaly or not
+bool HybridAnomalyDetector::isAnomaly(const correlatedFeatures* c, Point* &point) {
+    return (c->correlation > this->threshold && SimpleAnomalyDetector::isAnomaly(c, point))
+    || (c->correlation < this->threshold && c->threshold > this->minCorrelation
+        && point->distance(c->centerCircle) > c->threshold);
 }
 
-HybridAnomalyDetector::~HybridAnomalyDetector() {
-	// TODO Auto-generated destructor stub
+// add to cf if there is a correlation or don't add
+void HybridAnomalyDetector::addIfCorrelate(float maxPearson, Point** points, size_t size, string f1, string f2) {
+    SimpleAnomalyDetector::addIfCorrelate(maxPearson, points, size, f1, f2);
+    if (maxPearson > this->minCorrelation) {
+        Circle circle = findMinCircle(points, size);
+
+        // add the correlatedFeatures to cf
+        correlatedFeatures correlatedF = {f1, f2, maxPearson, Line(0, 0), circle.getCenter(),
+                                          (float(1.1) * circle.getRadius())};
+        cf.push_back(correlatedF);
+    }
 }
 
