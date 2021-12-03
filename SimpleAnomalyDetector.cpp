@@ -34,7 +34,7 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts) {
         if (!correlatedIndex.empty()) {
             auto **arrP = new Point*[size];
             SimpleAnomalyDetector::vectorsToPoints(arrP, currentColumn, ts.getHeaderDataByName(correlatedIndex));
-            SimpleAnomalyDetector::addIfCorrelate(maxP, arrP, size, ts.getHeaders().at(i), correlatedIndex);
+            addIfCorrelate(maxP, arrP, size, ts.getHeaders().at(i), correlatedIndex);
 
             // free the all points and the array of them
             for (int i = 0; i < size; ++i) {
@@ -57,7 +57,7 @@ void SimpleAnomalyDetector::addIfCorrelate(float maxPearson, Point** points, siz
 
         // add the correlatedFeatures to cf
         correlatedFeatures correlatedF = {f1, f2, maxPearson, l,Point(0, 0), (float(1.2) * maxT)};
-        cf.push_back(correlatedF);
+        this->cf.push_back(correlatedF);
     }
 }
 
@@ -78,7 +78,7 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts) {
             auto point = new Point(rowI->find(it->feature1)->second, rowI->find(it->feature2)->second);
 
             // check if the dev between the point and the line of these cf is bigger then the threshold.
-            if (SimpleAnomalyDetector::isAnomaly(it.base(), point)) {
+            if (isAnomaly(it.base(), point)) {
 
                 // add an anomaly report of these features to the vector of the reports
                 AnomalyReport anomalyReport(it->feature1 + "-" + it->feature2, i + 1);
@@ -102,9 +102,9 @@ float SimpleAnomalyDetector::maxThreshold(const Line& l, Point** points, long si
 
     // loop that get the max dev between the points and the line
     for (long j = 0; j < size; j++) {
-        float d = dev(*points[j], l);
-        if (d > max) {
-            max = d;
+        float dis = dev(*points[j], l);
+        if (dis > max) {
+            max = dis;
         }
     }
     return max;
