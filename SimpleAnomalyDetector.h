@@ -24,7 +24,7 @@ struct correlatedFeatures {
     string feature1,feature2;
 
     // |pearson(f1,f2)|
-    float correlation;
+    float corrlation;
 
     // the line we get from the points of f1, f2
     Line lin_reg;

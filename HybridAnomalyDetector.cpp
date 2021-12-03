@@ -8,8 +8,8 @@
 
 // return if there is an anomaly or not
 bool HybridAnomalyDetector::isAnomaly(const correlatedFeatures* c, Point* &point) {
-    return (c->correlation > this->threshold && SimpleAnomalyDetector::isAnomaly(c, point))
-    || (c->correlation < this->threshold && c->threshold > this->minCorrelation
+    return (c->corrlation > this->threshold && SimpleAnomalyDetector::isAnomaly(c, point))
+    || (c->corrlation < this->threshold && c->threshold > this->minCorrelation
         && point->distance(c->centerCircle) > c->threshold);
 }
 
