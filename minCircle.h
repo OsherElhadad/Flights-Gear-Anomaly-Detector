@@ -9,18 +9,21 @@
 
 #include <iostream>
 #include <vector>
-#include <stdlib.h>     /* srand, rand */
-#include <time.h>       /* time */
+#include <cstdlib>
+#include <ctime>
 #include "anomaly_detection_util.h"
-#include <assert.h>
+#include <cassert>
 #include <algorithm>
 
 using namespace std;
 
+// Circle has center point and radius
 class Circle{
 public:
 	Point center;
 	float radius;
+
+    // constructor
 	Circle(Point c,float r):center(c),radius(r){}
 
     // getter for center of circle
@@ -39,6 +42,7 @@ public:
     }
 };
 
+// returns the minimal enclosing circle for the received points
 Circle findMinCircle(Point** points,size_t size);
 
 #endif /* MINCIRCLE_H_ */
