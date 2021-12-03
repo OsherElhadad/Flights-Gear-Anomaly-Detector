@@ -10,6 +10,10 @@
 
 #include <memory>
 #include <vector>
+#define DOUBLE_POW 2
+#define DEFAULT_VALUE 0
+#define MIDDLE_DEST 2
+
 
 // returns the average of the array's members
 float avg(float* x, int size);
@@ -29,7 +33,7 @@ public:
 	float a,b;
 
     // default constructor
-	Line(): a(0), b(0) {}
+	Line(): a(DEFAULT_VALUE), b(DEFAULT_VALUE) {}
 
     // constructor
     Line(float a, float b): a(a), b(b) {}
@@ -47,6 +51,36 @@ public:
 
     // constructor
 	Point(float x, float y): x(x), y(y) {}
+
+    // getter for point's x
+    float getX() const{
+        return this->x;
+    }
+
+    // setter for point's x
+    void setX(float newX){
+        this->x = newX;
+    }
+
+    // getter for point's y
+    float getY() const{
+        return this->y;
+    }
+
+    // setter for point's y
+    void setY(float newY){
+        this->y = newY;
+    }
+
+    // returns euclidean distance between current point and the received point p
+    float distance(const Point& p) const {
+        return sqrtf(powf(this->x - p.getX(), DOUBLE_POW) + powf(this->y - p.getY(), DOUBLE_POW));
+    }
+
+    // returns the middle points between current points and the received point
+    Point middlePoint(const Point& p) const{
+        return {(this->x + p.getX()) / MIDDLE_DEST , (this->y + p.getY()) / MIDDLE_DEST};
+    }
 };
 
 // performs a linear regression and returns the line equation

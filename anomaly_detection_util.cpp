@@ -7,11 +7,14 @@
 
 #include <math.h>
 #include "anomaly_detection_util.h"
+#define EMPTY_ARRAY 0
+#define EPSILON_POW -10
+#define EPSILON_BASE 10
 
 // returns the average of the array's members
 float avg(float* x, int size) {
     // checks if the array size is a positive number
-    if(size <= 0) {
+    if(size <= EMPTY_ARRAY) {
         throw "Size must be positive!";
     }
 
@@ -27,7 +30,7 @@ float avg(float* x, int size) {
 // returns the variance of X
 float var(float* x, int size) {
     // checks if the array size is a positive number
-    if(size <= 0) {
+    if(size <= EMPTY_ARRAY) {
         throw "Size must be positive!";
     }
 
@@ -47,7 +50,7 @@ float var(float* x, int size) {
 // returns the covariance of X and Y
 float cov(float* x, float* y, int size) {
     // checks if the array size is a positive number
-    if(size <= 0) {
+    if(size <= EMPTY_ARRAY) {
         throw "Size must be positive!";
     }
 
@@ -79,9 +82,9 @@ void fill_x_and_y_arrays(Point** points, float* x, float* y, int size) {
 
 // performs a linear regression and returns the line equation
 Line linear_reg(Point** points, int size) {
-    float epsilon = powf(10,-10);
+    float epsilon = powf(EPSILON_BASE, EPSILON_POW);
     // checks if the array size is a positive number
-    if(size <= 0) {
+    if(size <= EMPTY_ARRAY) {
         throw "Size must be positive!";
     }
 
@@ -107,7 +110,7 @@ Line linear_reg(Point** points, int size) {
 // returns the deviation between point p and the line equation of the points
 float dev(Point p, Point** points, int size) {
     // checks if the array size is a positive number
-    if(size <= 0) {
+    if(size <= EMPTY_ARRAY) {
         throw "Size must be positive!";
     }
 	return dev(p, linear_reg(points, size));
@@ -125,7 +128,3 @@ float dev(Point p, Line l) {
         return yOfPoint - yOfLine;
     }
 }
-
-
-
-
