@@ -23,6 +23,17 @@ public:
 	float radius;
 	Circle(Point c,float r):center(c),radius(r){}
 
+    // getter for center of circle
+    const Point& getCenter() const{
+        return this->center;
+    }
+
+    // getter for center of circle
+    float getRadius() const{
+        return this->radius;
+    }
+
+    // returns true if the received point is inside the circle and false otherwise
     bool is_point_inside(const Point& p) const {
         return p.distance(this->center) <= this->radius;
     }

@@ -53,22 +53,22 @@ public:
 	Point(float x, float y): x(x), y(y) {}
 
     // getter for point's x
-    float getX() const{
+    float getX() const {
         return this->x;
     }
 
     // setter for point's x
-    void setX(float newX){
+    void setX(float newX) {
         this->x = newX;
     }
 
     // getter for point's y
-    float getY() const{
+    float getY() const {
         return this->y;
     }
 
     // setter for point's y
-    void setY(float newY){
+    void setY(float newY) {
         this->y = newY;
     }
 
@@ -78,7 +78,7 @@ public:
     }
 
     // returns the middle points between current points and the received point
-    Point middlePoint(const Point& p) const{
+    Point middlePoint(const Point& p) const {
         return {(this->x + p.getX()) / MIDDLE_DEST , (this->y + p.getY()) / MIDDLE_DEST};
     }
 };
