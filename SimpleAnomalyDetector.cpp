@@ -31,20 +31,10 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts) {
         }
 
         // check if there is a max correlated feature that has more correlation than the threshold value
-        if (!correlatedIndex.empty() && maxP > threshold) {
-            auto** arrP = new Point*[size];
-
-            // get a line from the 2 vectors of the 2 features and fill arrP with points from the vectors
-            Line l = SimpleAnomalyDetector::vectorsToLine(arrP, currentColumn,
-                                                          ts.getHeaderDataByName(correlatedIndex), size);
-
-            // get the max threshold between the line and the points in arrP
-            float maxT = SimpleAnomalyDetector::maxThreshold(l, arrP, size);
-
-            // add the correlatedFeatures to cf
-            correlatedFeatures correlatedF = {ts.getHeaders().at(i), correlatedIndex, maxP, l,
-                                              (float(1.2) * maxT)};
-            cf.push_back(correlatedF);
+        if (!correlatedIndex.empty()) {
+            auto **arrP = new Point*[size];
+            SimpleAnomalyDetector::vectorsToPoints(arrP, currentColumn, ts.getHeaderDataByName(correlatedIndex));
+            SimpleAnomalyDetector::addIfCorrelate(maxP, arrP, size, ts.getHeaders().at(i), correlatedIndex);
 
             // free the all points and the array of them
             for (int i = 0; i < size; ++i) {
@@ -52,6 +42,22 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts) {
             }
             delete[] arrP;
         }
+    }
+}
+
+// add to cf if there is a correlation or don't add
+void SimpleAnomalyDetector::addIfCorrelate(float maxPearson, Point** points, size_t size, string f1, string f2) {
+    if (maxPearson > this->threshold) {
+
+        // get a line from the 2 vectors of the 2 features
+        Line l = SimpleAnomalyDetector::pointsToLine(points, size);
+
+        // get the max threshold between the line and the points in arrP
+        float maxT = SimpleAnomalyDetector::maxThreshold(l, points, size);
+
+        // add the correlatedFeatures to cf
+        correlatedFeatures correlatedF = {f1, f2, maxPearson, l,Point(0, 0), (float(1.2) * maxT)};
+        cf.push_back(correlatedF);
     }
 }
 
@@ -72,7 +78,7 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts) {
             auto point = new Point(rowI->find(it->feature1)->second, rowI->find(it->feature2)->second);
 
             // check if the dev between the point and the line of these cf is bigger then the threshold.
-            if (dev(*point, it->lin_reg) > it->threshold) {
+            if (SimpleAnomalyDetector::isAnomaly(it.base(), point)) {
 
                 // add an anomaly report of these features to the vector of the reports
                 AnomalyReport anomalyReport(it->feature1 + "-" + it->feature2, i + 1);
@@ -83,6 +89,11 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts) {
         delete rowI;
     }
     return repoVec;
+}
+
+// return if there is an anomaly or not
+bool SimpleAnomalyDetector::isAnomaly(const correlatedFeatures* c, Point* &point) {
+    return (dev(*point, c->lin_reg) > c->threshold);
 }
 
 // maxThreshold - get a line and points and checks the max dev from the points to the line
@@ -99,13 +110,17 @@ float SimpleAnomalyDetector::maxThreshold(const Line& l, Point** points, long si
     return max;
 }
 
-// turn 2 vectors of floats to a line, and fill arrP with points from the vectors.
-Line SimpleAnomalyDetector::vectorsToLine(Point** arrP, vector<float> vec1, vector<float> vec2, int size) {
+// fill arrP with points from the vectors
+void SimpleAnomalyDetector::vectorsToPoints(Point **arrP, vector<float> vec1, vector<float> vec2) {
 
     // loop that fill the arrP with points (x from vec1, and y from vec2)
-    for (int i = 0; i < size; ++i) {
+    for (int i = 0; i < vec1.size(); ++i) {
         arrP[i] = new Point(vec1[i], vec2[i]);
     }
+}
+
+// turn 2 vectors of floats to a line
+Line SimpleAnomalyDetector::pointsToLine(Point **arrP, int size) {
 
     // get a linear reg from these points and returns it
     Line l = linear_reg(arrP, size);
