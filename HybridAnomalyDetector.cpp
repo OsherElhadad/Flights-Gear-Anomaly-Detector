@@ -16,12 +16,12 @@ bool HybridAnomalyDetector::isAnomaly(const correlatedFeatures* c, Point* &point
 // add to cf if there is a correlation or don't add
 void HybridAnomalyDetector::addIfCorrelate(float maxPearson, Point** points, size_t size, string f1, string f2) {
     SimpleAnomalyDetector::addIfCorrelate(maxPearson, points, size, f1, f2);
-    if (maxPearson > this->minCorrelation) {
+    if (maxPearson > this->minCorrelation && maxPearson <= this->threshold) {
         Circle circle = findMinCircle(points, size);
 
         // add the correlatedFeatures to cf
         correlatedFeatures correlatedF = {f1, f2, maxPearson, Line(0, 0), circle.getCenter(),
-                                          (float(1.1) * circle.getRadius())};
+                                          (float(1.2) * circle.getRadius())};
         cf.push_back(correlatedF);
     }
 }
