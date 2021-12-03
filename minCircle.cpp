@@ -6,6 +6,7 @@
  */
 #include "minCircle.h"
 #define MIDDLE_DEST 2
+#define ZERO_CIRCLE 0
 
 // returns center of circle based on three points
 Point get_circle_center(float bx, float by, float cx, float cy) {
@@ -56,11 +57,11 @@ Circle min_circle_trivial(vector<Point>& P) {
 
     // in case there are no points, create a "zero" circle
     if (P.empty())
-        return { { 0, 0 }, 0 };
+        return { { ZERO_CIRCLE, ZERO_CIRCLE }, ZERO_CIRCLE };
 
     // in case there is a single point, create a "dot circle"
     else if (P.size() == 1)
-        return { P[0], 0 };
+        return { P[0], ZERO_CIRCLE };
 
     // in case there are two points, create a minimal circle
     else if (P.size() == 2)
@@ -81,7 +82,7 @@ Circle min_circle_trivial(vector<Point>& P) {
 }
 
 // returns the minimal enclosing circle using welzl algorithm
-Circle MEC_welzl(vector<Point>& points, vector<Point> leftOut, int n) {
+Circle MEC_welzl(Point** points, vector<Point> leftOut, int n) {
 
     // base case when all points processed or |leftOut| = 3
     if (n == 0 || leftOut.size() == 3)
@@ -89,7 +90,7 @@ Circle MEC_welzl(vector<Point>& points, vector<Point> leftOut, int n) {
 
     // Pick a random point
     int idx = rand() % n;
-    Point p = points[idx];
+    Point p = *points[idx];
 
     // put the picked point at the end of points
     swap(points[idx], points[n - 1]);
@@ -109,7 +110,5 @@ Circle MEC_welzl(vector<Point>& points, vector<Point> leftOut, int n) {
 
 // returns the minimal enclosing circle for the received points
 Circle findMinCircle(Point** points, size_t size) {
-    std::vector<Point> points_vector(points, points + size);
-    random_shuffle(points_vector.begin(), points_vector.end());
-    return MEC_welzl(points_vector, {}, points_vector.size());
+    return MEC_welzl(points, {}, size);
 }

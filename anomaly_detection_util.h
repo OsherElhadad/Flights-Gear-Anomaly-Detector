@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <vector>
+#include <cmath>
 #define DOUBLE_POW 2
 #define DEFAULT_VALUE 0
 #define MIDDLE_DEST 2
