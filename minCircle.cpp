@@ -10,29 +10,9 @@
 #define MAX_POINTS 3
 #define EMPTY 0
 #define DOUBLE 2
-
-// returns center of circle based on three points
-Point get_circle_center(float bx, float by, float cx, float cy) {
-    float b = bx * bx + by * by;
-    float c = cx * cx + cy * cy;
-    float d = bx * cy - by * cx;
-    return {(cy * b - by * c) / (DOUBLE * d),(bx * c - cx * b) / (DOUBLE * d) };
-}
-
-// return circle that intersect with the received points
-Circle createCircle(const Point& a, const Point& b, const Point& c) {
-    Point center = get_circle_center(b.getX() - a.getX(), b.getY() - a.getY(),
-                                     c.getX() - a.getX(),c.getY() - a.getY());
-
-    // set final center's x axis
-    center.setX(center.getX() + a.getX());
-
-    // set final center's y axis
-    center.setY(center.getY() + a.getY());
-
-    // return the wanted circle
-    return { center, center.distance(a)};
-}
+#define FIRST_POINT 0
+#define SECOND_POINT 1
+#define THIRD_POINT 2
 
 // return the smallest circle that intersects 2 points
 Circle createCircle(const Point& a, const Point& b) {
@@ -44,16 +24,6 @@ Circle createCircle(const Point& a, const Point& b) {
     return { C, a.distance(b) / MIDDLE_DEST };
 }
 
-// return true if received circle encloses the received points and false otherwise
-bool is_valid_circle(const Circle& c, const vector<Point>& P) {
-
-    // in case one of the points is outside the circle, return false
-    for (const Point& p : P)
-        if (c.is_point_inside(p))
-            return false;
-    return true;
-}
-
 // return the minimum enclosing circle for 3 or fewer points
 Circle min_circle_trivial(vector<Point>& P) {
 
@@ -61,30 +31,56 @@ Circle min_circle_trivial(vector<Point>& P) {
     if (P.empty())
         return { { ZERO_CIRCLE, ZERO_CIRCLE }, ZERO_CIRCLE };
 
-    // in case there is a single point, create a "dot circle"
-    else if (P.size() == MAX_POINTS - 2)
-        return { P[0], ZERO_CIRCLE };
+        // in case there is a single point, create a "dot circle"
+    else if (P.size() == 1)
+        return { P[FIRST_POINT], ZERO_CIRCLE };
 
-    // in case there are two points, create a minimal circle
-    else if (P.size() == MAX_POINTS - 1)
-        return createCircle(P[0], P[1]);
+        // in case there are two points, create a minimal circle
+    else if (P.size() == 2)
+        return createCircle(P[FIRST_POINT], P[SECOND_POINT]);
 
-    /*
-     * in case of 3 points, check if it is possible to create minimal circle using two points
-     * if yes, create and return it
-     */
-    for (int i = 0; i < MAX_POINTS; i++) {
-        for (int j = i + 1; j < MAX_POINTS; j++) {
-            Circle c = createCircle(P[i], P[j]);
-            if (is_valid_circle(c, P))
-                return c;
-        }
-    }
-    return createCircle(P[0], P[1], P[2]);
+    Circle c = createCircle(P[FIRST_POINT], P[SECOND_POINT]);
+    if (c.is_point_inside(P[THIRD_POINT]))
+        return c;
+
+    c = createCircle(P[FIRST_POINT], P[THIRD_POINT]);
+    if (c.is_point_inside(P[SECOND_POINT]))
+        return c;
+
+    c = createCircle(P[SECOND_POINT], P[THIRD_POINT]);
+    if (c.is_point_inside(P[FIRST_POINT]))
+        return c;
+
+    float ax = P[FIRST_POINT].getX();
+    float ay = P[FIRST_POINT].getY();
+    float bx = P[SECOND_POINT].getX();
+    float by = P[SECOND_POINT].getY();
+    float cx = P[THIRD_POINT].getX();
+    float cy = P[THIRD_POINT].getY();
+
+    float k = bx - ax;
+    float t = by - ay;
+    float s = cx - ax;
+    float v = cy - ay;
+
+    float x = k * k + t * t;
+    float y = s * s + v * v;
+    float z = k * v - t * s;
+    float div = DOUBLE * z;
+    auto* center = new Point((v * x - t * y) / div, (k * y - s * x) / div);
+
+    // set final center's x axis
+    center->setX(center->getX() + P[FIRST_POINT].getX());
+
+    // set final center's y axis
+    center->setY(center->getY() + P[FIRST_POINT].getY());
+
+    // return the wanted circle
+    return { *center, center->distance(P[FIRST_POINT])};
 }
 
 // returns the minimal enclosing circle using welzl algorithm
-Circle mecWelzl(Point** points, vector<Point> leftOut, int n) {
+Circle mecWelzl(Point**& points, vector<Point> leftOut, int n) {
 
     // base case when all points processed or |leftOut| = 3
     if (n == EMPTY || leftOut.size() == MAX_POINTS)
