@@ -31,23 +31,28 @@ Circle min_circle_trivial(vector<Point>& P) {
     if (P.empty())
         return { { ZERO_CIRCLE, ZERO_CIRCLE }, ZERO_CIRCLE };
 
-        // in case there is a single point, create a "dot circle"
+    // in case there is a single point, create a "dot circle"
     else if (P.size() == 1)
         return { P[FIRST_POINT], ZERO_CIRCLE };
 
-        // in case there are two points, create a minimal circle
+    // in case there are two points, create a minimal circle
     else if (P.size() == 2)
         return createCircle(P[FIRST_POINT], P[SECOND_POINT]);
 
+    // in case minimal circle from first and second point contain third point, it's the wanted circle
     Circle c = createCircle(P[FIRST_POINT], P[SECOND_POINT]);
     if (c.is_point_inside(P[THIRD_POINT]))
         return c;
 
     c = createCircle(P[FIRST_POINT], P[THIRD_POINT]);
+
+    // in case minimal circle from first and third point contain second point, it's the wanted circle
     if (c.is_point_inside(P[SECOND_POINT]))
         return c;
 
     c = createCircle(P[SECOND_POINT], P[THIRD_POINT]);
+
+    // in case minimal circle from first and second point contain third point, it's the wanted circle
     if (c.is_point_inside(P[FIRST_POINT]))
         return c;
 
@@ -67,6 +72,8 @@ Circle min_circle_trivial(vector<Point>& P) {
     float y = s * s + v * v;
     float z = k * v - t * s;
     float div = DOUBLE * z;
+
+    // calculate circle's center according to 3 points
     auto* center = new Point((v * x - t * y) / div, (k * y - s * x) / div);
 
     // set final center's x axis
