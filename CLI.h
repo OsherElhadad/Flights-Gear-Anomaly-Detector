@@ -12,12 +12,19 @@
 
 using namespace std;
 
+// Command line interface - used to start interaction with user
 class CLI {
     DefaultIO* dio;
-    // you can add data members
+    vector<Command*> commands;
 public:
+
+    // constructor
     CLI(DefaultIO* dio);
+
+    // starts the interaction with the user
     void start();
+
+    // destructor
     virtual ~CLI();
 };
 
