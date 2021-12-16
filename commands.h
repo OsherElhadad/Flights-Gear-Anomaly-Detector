@@ -24,14 +24,15 @@ public:
     virtual void read(float* f)=0;
     virtual ~DefaultIO(){}
 
-    string readFileData(string path) {
-        string line;
+    string readFileData(string fileData) {
+        string data, line;
         while (line != "done") {
             // TODO
         }
     }
 };
 
+// Standard IO - interaction with user using console printing and scanning
 class StandardIO: public DefaultIO {
     string read() override {
         string input;
@@ -49,17 +50,29 @@ class StandardIO: public DefaultIO {
 
     void read(float* f) {
         // TODO
-        return;
     }
 };
 
-class Command{
+class Info {
+    float Threshold;
+
+public:
+    float getThreshold() const {
+        return this->Threshold;
+    }
+
+    void setThreshold(float t) {
+        this->Threshold = t;
+    }
+};
+
+class Command {
     const string description;
 protected:
     DefaultIO* dio;
 public:
     Command(DefaultIO* dio, const string& d):dio(dio), description{d}{}
-    virtual void execute()=0;
+    virtual void execute(Info* info)=0;
     virtual ~Command(){}
 
     string getDescription() const {
@@ -70,11 +83,9 @@ public:
 class UploadTimeSeriesCommand: public Command {
 public:
     UploadTimeSeriesCommand(DefaultIO* dio):Command(dio, "upload a time series csv file"){}
-    void execute() override {
-        this->dio->write("Please upload your local train CSV file.");
-        string pathInput;
-        cin >> pathInput;
-        string csvData = this->dio->readFileData(pathInput);
+    void execute(Info* info) override {
+        this->dio->write("Please upload your local train CSV file.\n");
+        string csvData = this->dio->read();
         // TODO
     }
 };
@@ -82,15 +93,23 @@ public:
 class ThresholdCommand: public Command {
 public:
     ThresholdCommand(DefaultIO* dio):Command(dio, "algorithm settings"){}
-    void execute() override {
-        // TODO
+    void execute(Info* info) override {
+        string current = std::to_string(info->getThreshold());
+        cout << "The current correlation threshold is " + current + "\n";
+        float input = -1;
+        while (input < 0 || input > 1) {
+            cin >> input;
+            if (input < 0 || input > 1)
+                cout << "please choose a value between 0 and 1.\n";
+        }
+        info->setThreshold(input);
     }
 };
 
 class DetectAnomaliesCommand: public Command {
 public:
     DetectAnomaliesCommand(DefaultIO* dio):Command(dio, "detect anomalies"){}
-    void execute() override {
+    void execute(Info* info) override {
         // TODO
     }
 };
@@ -98,7 +117,7 @@ public:
 class DisplayAnomaliesCommand: public Command {
 public:
     DisplayAnomaliesCommand(DefaultIO* dio):Command(dio, "display results"){}
-    void execute() override {
+    void execute(Info* info) override {
         // TODO
     }
 };
@@ -106,7 +125,7 @@ public:
 class UploadAnomaliesAndAnalyzeCommand: public Command {
 public:
     UploadAnomaliesAndAnalyzeCommand(DefaultIO* dio):Command(dio, "upload anomalies and analyze results"){}
-    void execute() override {
+    void execute(Info* info) override {
         // TODO
     }
 };
@@ -114,7 +133,7 @@ public:
 class ExitCommand: public Command {
 public:
     ExitCommand(DefaultIO* dio):Command(dio, "exit"){}
-    void execute() override {
+    void execute(Info* info) override {
         // TODO
     }
 };
