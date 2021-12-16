@@ -9,12 +9,18 @@
 // constructor
 CLI::CLI(DefaultIO* dio) {
     this->dio = dio;
-    this->commands.push_back(new UploadTimeSeriesCommand(dio));
-    this->commands.push_back(new ThresholdCommand(dio));
-    this->commands.push_back(new DetectAnomaliesCommand(dio));
-    this->commands.push_back(new DisplayAnomaliesCommand(dio));
-    this->commands.push_back(new UploadAnomaliesAndAnalyzeCommand(dio));
-    this->commands.push_back(new ExitCommand(dio));
+    this->createCommands();
+}
+
+// virtual method- create by default 1. upload a time series csv file. 2. algorithm settings.
+//3. detect anomalies. 4. display results. 5. upload anomalies and analyze results. 6. exit.
+void CLI::createCommands() {
+    this->commands.push_back(new UploadTimeSeriesCommand(this->dio));
+    this->commands.push_back(new ThresholdCommand(this->dio));
+    this->commands.push_back(new DetectAnomaliesCommand(this->dio));
+    this->commands.push_back(new DisplayAnomaliesCommand(this->dio));
+    this->commands.push_back(new UploadAnomaliesAndAnalyzeCommand(this->dio));
+    this->commands.push_back(new ExitCommand(this->dio));
 }
 
 // starts the interaction with the user
