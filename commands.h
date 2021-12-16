@@ -23,6 +23,13 @@ public:
     virtual void write(float f)=0;
     virtual void read(float* f)=0;
     virtual ~DefaultIO(){}
+
+    string readFileData(string path) {
+        string line;
+        while (line != "done") {
+
+        }
+    }
 };
 
 class StandardIO: public DefaultIO {
@@ -47,8 +54,9 @@ class StandardIO: public DefaultIO {
 };
 
 class Command{
-    DefaultIO* dio;
     const string description;
+protected:
+    DefaultIO* dio;
 public:
     Command(DefaultIO* dio, const string& d):dio(dio), description{d}{}
     virtual void execute()=0;
@@ -63,7 +71,10 @@ class UploadTimeSeriesCommand: public Command {
 public:
     UploadTimeSeriesCommand(DefaultIO* dio):Command(dio, "upload a time series csv file"){}
     void execute() override {
-        return;
+        this->dio->write("Please upload your local train CSV file.");
+        string pathInput;
+        cin >> pathInput;
+        this->dio->readFileData(pathInput);
     }
 };
 
