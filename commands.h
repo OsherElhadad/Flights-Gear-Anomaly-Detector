@@ -27,7 +27,7 @@ public:
     string readFileData(string path) {
         string line;
         while (line != "done") {
-
+            // TODO
         }
     }
 };
@@ -72,8 +72,10 @@ public:
     UploadTimeSeriesCommand(DefaultIO* dio):Command(dio, "upload a time series csv file"){}
     void execute() override {
         this->dio->write("Please upload your local train CSV file.");
-        string pathInput = this->dio->read();
-        this->dio->readFileData(pathInput);
+        string pathInput;
+        cin >> pathInput;
+        string csvData = this->dio->readFileData(pathInput);
+        // TODO
     }
 };
 
@@ -81,7 +83,7 @@ class ThresholdCommand: public Command {
 public:
     ThresholdCommand(DefaultIO* dio):Command(dio, "algorithm settings"){}
     void execute() override {
-        return;
+        // TODO
     }
 };
 
@@ -89,7 +91,7 @@ class DetectAnomaliesCommand: public Command {
 public:
     DetectAnomaliesCommand(DefaultIO* dio):Command(dio, "detect anomalies"){}
     void execute() override {
-        return;
+        // TODO
     }
 };
 
@@ -97,7 +99,7 @@ class DisplayAnomaliesCommand: public Command {
 public:
     DisplayAnomaliesCommand(DefaultIO* dio):Command(dio, "display results"){}
     void execute() override {
-        return;
+        // TODO
     }
 };
 
@@ -105,7 +107,7 @@ class UploadAnomaliesAndAnalyzeCommand: public Command {
 public:
     UploadAnomaliesAndAnalyzeCommand(DefaultIO* dio):Command(dio, "upload anomalies and analyze results"){}
     void execute() override {
-        return;
+        // TODO
     }
 };
 
@@ -113,7 +115,7 @@ class ExitCommand: public Command {
 public:
     ExitCommand(DefaultIO* dio):Command(dio, "exit"){}
     void execute() override {
-        return;
+        // TODO
     }
 };
 
