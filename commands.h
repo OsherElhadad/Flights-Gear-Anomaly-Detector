@@ -72,8 +72,7 @@ public:
     UploadTimeSeriesCommand(DefaultIO* dio):Command(dio, "upload a time series csv file"){}
     void execute() override {
         this->dio->write("Please upload your local train CSV file.");
-        string pathInput;
-        cin >> pathInput;
+        string pathInput = this->dio->read();
         this->dio->readFileData(pathInput);
     }
 };
