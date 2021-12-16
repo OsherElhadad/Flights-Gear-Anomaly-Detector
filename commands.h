@@ -9,7 +9,6 @@
 
 #include<iostream>
 #include <string.h>
-
 #include <fstream>
 #include <vector>
 #include "HybridAnomalyDetector.h"
@@ -24,11 +23,19 @@ public:
     virtual void read(float* f)=0;
     virtual ~DefaultIO(){}
 
-    string readFileData(string fileData) {
-        string data, line;
+    string readFileData() {
+        string data;
+        string line = this->read();
         while (line != "done") {
-            // TODO
+            line.append("\n");
+            data.append(line);
+            line = this->read();
         }
+        return data;
+    }
+    void CreateFile(const string& fileName, const string& data) {
+        std:ofstream outfile {fileName};
+        outfile << data;
     }
 };
 
@@ -49,7 +56,7 @@ class StandardIO: public DefaultIO {
     }
 
     void read(float* f) {
-        // TODO
+        cin >> *f;
     }
 };
 
@@ -85,8 +92,20 @@ public:
     UploadTimeSeriesCommand(DefaultIO* dio):Command(dio, "upload a time series csv file"){}
     void execute(Info* info) override {
         this->dio->write("Please upload your local train CSV file.\n");
-        string csvData = this->dio->read();
-        // TODO
+
+        // read csv data from client
+        string csvData = this->dio->readFileData();
+
+        // create csv file
+        this->dio->CreateFile("anomalyTrain.csv", csvData);
+
+        this->dio->write("Please upload your local test CSV file.\n");
+
+        // read csv data from client
+        csvData = this->dio->readFileData();
+
+        // create csv file
+        this->dio->CreateFile("anomalyTest.csv", csvData);
     }
 };
 
@@ -94,14 +113,18 @@ class ThresholdCommand: public Command {
 public:
     ThresholdCommand(DefaultIO* dio):Command(dio, "algorithm settings"){}
     void execute(Info* info) override {
-        string current = std::to_string(info->getThreshold());
-        cout << "The current correlation threshold is " + current + "\n";
+        string currentThreshold = std::to_string(info->getThreshold());
+        cout << "The current correlation threshold is " + currentThreshold + "\n";
         float input = -1;
+
+        // get new threshold from client until it is a valid one
         while (input < 0 || input > 1) {
-            cin >> input;
+            this->dio->read(&input);
             if (input < 0 || input > 1)
                 cout << "please choose a value between 0 and 1.\n";
         }
+
+        // set new threshold
         info->setThreshold(input);
     }
 };
