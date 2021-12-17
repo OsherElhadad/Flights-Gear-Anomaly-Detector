@@ -34,12 +34,11 @@ void CLI::start() {
 
         // get command number from user
         userInput = stoi(this->dio->read());
-        while (userInput > 6 || userInput < 1) {
-            userInput = stoi(this->dio->read());
-        }
+        if (userInput <= 6 && userInput >= 1) {
 
-        // runs the chosen command
-        this->commands.at(userInput - 1)->execute(sharedInfo);
+            // runs the chosen command
+            this->commands.at(userInput - 1)->execute(sharedInfo);
+        }
     } while (userInput != 6);
     delete sharedInfo;
 }
