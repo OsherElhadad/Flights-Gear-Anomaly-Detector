@@ -26,10 +26,6 @@ public:
 
     // destructor
     virtual ~CLI();
-
-    // virtual method- create by default 1. upload a time series csv file. 2. algorithm settings.
-    //3. detect anomalies. 4. display results. 5. upload anomalies and analyze results. 6. exit.
-    virtual void createCommands();
 };
 
 #endif /* CLI_H_ */

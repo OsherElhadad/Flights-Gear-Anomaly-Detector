@@ -16,17 +16,31 @@
 
 using namespace std;
 
+// abstract class used to define ways to interact with users
 class DefaultIO {
 public:
+
+    // read a string from user
     virtual string read()=0;
+
+    // write a string to the user
     virtual void write(string text)=0;
+
+    // write a float number to the user
     virtual void write(float f)=0;
+
+    // read a float number from user
     virtual void read(float* f)=0;
+
+    // destructor
     virtual ~DefaultIO(){}
 
+    // read a csv data and return string containing this data
     string readFileData() {
         string data;
         string line = this->read();
+
+        // read all lines as long it's not "done" and add them to the data string
         while (line != "done") {
             line.append("\n");
             data.append(line);
@@ -34,6 +48,8 @@ public:
         }
         return data;
     }
+
+    // create a file with name "fileName" containing "data"
     void CreateFile(const string& fileName, const string& data) {
         std:ofstream outfile {fileName};
         outfile << data;
@@ -104,55 +120,73 @@ public:
     }
 };
 
+// command has description and DefaultIO*
 class Command {
     const string description;
 protected:
     DefaultIO* dio;
 public:
+
+    // constructor
     Command(DefaultIO* dio, const string& d):dio(dio), description{d}{}
+
+    // activate the command and update info accordingly
     virtual void execute(Info* info)=0;
+
+    // destructor
     virtual ~Command(){}
 
+    // description getter
     string getDescription() const {
         return this->description;
     }
 };
 
+/*
+ * used to upload csv files.
+ * user sends train csv file data and test csv file data and the command save them as csv files
+ */
 class UploadTimeSeriesCommand: public Command {
 public:
+
+    // constructor
     UploadTimeSeriesCommand(DefaultIO* dio):Command(dio, "upload a time series csv file\n"){}
+
+    // creates the csv files and update the info files names
     void execute(Info* info) override {
         this->dio->write("Please upload your local train CSV file.\n");
 
         // read csv data from client
         string csvData = this->dio->readFileData();
-
         string fileNameLearn = "anomalyTrain.csv";
 
         // create csv file
         this->dio->CreateFile(fileNameLearn, csvData);
         info->setCSVfileNameLearn(fileNameLearn);
-
         this->dio->write("Upload complete.\n");
-
         this->dio->write("Please upload your local test CSV file.\n");
 
         // read csv data from client
         csvData = this->dio->readFileData();
-
         string fileNameDetect = "anomalyTest.csv";
 
         // create csv file
         this->dio->CreateFile(fileNameDetect, csvData);
         info->setCSVfileNameDetect(fileNameDetect);
-
         this->dio->write("Upload complete.\n");
     }
 };
 
+/*
+ * shows current threshold to the user who enters new threshold and the command updates it accordingly
+ */
 class ThresholdCommand: public Command {
 public:
+
+    // constructor
     ThresholdCommand(DefaultIO* dio):Command(dio, "algorithm settings\n"){}
+
+    // update new threshold in info according to user input
     void execute(Info* info) override {
         string currentThreshold = std::to_string(info->getThreshold());
         this->dio->write("The current correlation threshold is " + currentThreshold + "\n");

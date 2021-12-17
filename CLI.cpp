@@ -9,12 +9,6 @@
 // constructor
 CLI::CLI(DefaultIO* dio) {
     this->dio = dio;
-    this->createCommands();
-}
-
-// virtual method- create by default 1. upload a time series csv file. 2. algorithm settings.
-//3. detect anomalies. 4. display results. 5. upload anomalies and analyze results. 6. exit.
-void CLI::createCommands() {
     this->commands.push_back(new UploadTimeSeriesCommand(this->dio));
     this->commands.push_back(new ThresholdCommand(this->dio));
     this->commands.push_back(new DetectAnomaliesCommand(this->dio));
@@ -37,6 +31,8 @@ void CLI::start() {
             this->dio->write(i + 1);
             this->dio->write("." + commands.at(i)->getDescription());
         }
+
+        // get command number from user
         userInput = stoi(this->dio->read());
         while (userInput > 6 || userInput < 1) {
             userInput = stoi(this->dio->read());
