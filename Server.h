@@ -9,6 +9,9 @@
 #define SERVER_H_
 
 
+#include <thread>
+#include <netinet/in.h>
+
 using namespace std;
 
 // edit your ClientHandler interface here:
@@ -33,8 +36,9 @@ public:
 // implement on Server.cpp
 class Server {
     thread* t; // the thread to run the start() method in
-
-    // you may add data members
+    int fd;
+    sockaddr_in client;
+    sockaddr_in server;
 
 public:
     Server(int port) throw (const char*);
