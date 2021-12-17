@@ -66,6 +66,7 @@ class Info {
     string CSVFileNameLearn;
     string CSVFileNameDetect;
     vector<AnomalyReport> reportVector;
+    long rowNumber;
 
 public:
     void learnNormal() {
@@ -73,7 +74,13 @@ public:
     }
 
     void detect() {
-        this->reportVector = this->hd.detect(TimeSeries(this->CSVFileNameLearn));
+        TimeSeries ts = TimeSeries(this->CSVFileNameDetect);
+        this->rowNumber = ts.getRowNumber();
+        this->reportVector = this->hd.detect(ts);
+    }
+
+    long getRowNumber() const {
+        return this->rowNumber;
     }
 
     const vector<AnomalyReport> getReportVector() const {
@@ -88,16 +95,8 @@ public:
         this->hd.setThreshold(t);
     }
 
-    string getCSVfileNameLearn() const {
-        return this->CSVFileNameLearn;
-    }
-
     void setCSVfileNameLearn(string fileNameLearn) {
         this->CSVFileNameLearn = fileNameLearn;
-    }
-
-    string getCSVfileNameDetect() const {
-        return this->CSVFileNameDetect;
     }
 
     void setCSVfileNameDetect(string fileNameDetect) {
@@ -161,6 +160,7 @@ public:
 
         // get new threshold from client until it is a valid one
         while (input < 0 || input > 1) {
+            this->dio->write("Type a new threshold\n");
             this->dio->read(&input);
             if (input < 0 || input > 1)
                 this->dio->write("please choose a value between 0 and 1.\n");
@@ -187,7 +187,7 @@ public:
     void execute(Info* info) override {
         vector<AnomalyReport> reportVector = info->getReportVector();
         for (AnomalyReport& ar : reportVector) {
-            this->dio->write(to_string(ar.timeStep) + "\t" + ar.description);
+            this->dio->write(to_string(ar.timeStep) + "\t" + ar.description + "\n");
         }
         this->dio->write("Done.\n");
     }
@@ -202,18 +202,25 @@ public:
         // read csv data from client
         string csvData = this->dio->readFileData();
         this->dio->write("Upload complete.\n");
+        string s = "8";
+        int x = s.find("*");
+        if (x < 0) {
+            int y = 0;
+
+        }
 
         map<string, vector<string>> cfReported = map<string, vector<string>>();
         vector<AnomalyReport> reportVector = info->getReportVector();
         for (AnomalyReport& ar : reportVector) {
-            if (cfReported.find(ar.description) != cfReported.end()) {
+            if (cfReported.find(ar.description) == cfReported.end()) {
                 cfReported[ar.description] = vector<string>();
                 cfReported[ar.description].push_back(to_string(ar.timeStep));
             } else {
-                if (cfReported[ar.description].back().find('*') < 0) {
+                int a = cfReported.find(ar.description)->second.back().find("*");
+                if (a < 0) {
                     long start = stol(cfReported[ar.description].back());
                     if (start == ar.timeStep - 1) {
-                        cfReported[ar.description].back() = cfReported[ar.description].back() + "*" + to_string(start);
+                        cfReported[ar.description].back() = cfReported[ar.description].back() + "*" + to_string(ar.timeStep);
                     } else {
                         cfReported[ar.description].push_back(to_string(ar.timeStep));
                     }
@@ -221,7 +228,7 @@ public:
                     long endNum = stol(strSplit(cfReported[ar.description].back(), '*')[1]);
                     if (endNum == ar.timeStep - 1) {
                         cfReported[ar.description].back() = strSplit(cfReported[ar.description].back(), '*')[0]
-                                + "*" + to_string(endNum);
+                                + "*" + to_string(ar.timeStep);
                     } else {
                         cfReported[ar.description].push_back(to_string(ar.timeStep));
                     }
@@ -232,16 +239,16 @@ public:
         vector<long> ends = vector<long>();
         vector<string> intervals = strSplit(csvData, '\n');
         long P = intervals.size();
-        long N = P;
+        long N = info->getRowNumber();
         for (string& interval : intervals) {
             vector<string> startEnd = strSplit(interval, ',');
             starts.push_back(stol(startEnd[0]));
             ends.push_back(stol(startEnd[1]));
             N -= (stol(startEnd[1]) - stol(startEnd[0]) + 1);
         }
-        long FP, TP;
-        for (AnomalyReport& ar : reportVector) {
-            for (string& interval : cfReported[ar.description]) {
+        long FP = 0, TP = 0;
+        for (auto& ar : cfReported) {
+            for (string& interval : cfReported.find(ar.first)->second) {
                 long start1, end1;
                 if (interval.find('*') < 0) {
                     start1 = stol(interval);
@@ -258,16 +265,17 @@ public:
                         break;
                     }
                 }
-                if (!flag) {
+                if (flag) {
                     FP++;
                 }
             }
         }
-        std::ostringstream strStream;
-        strStream << fixed << setprecision(3)  << ((float) TP / (float) P);
-        this->dio->write("True Positive Rate: " + strStream.str() + "\n");
-        strStream << fixed << setprecision(3)  << ((float) FP / (float) N);
-        this->dio->write("False Positive Rate: " + strStream.str() + "\n");
+        this->dio->write("True Positive Rate: ");
+        this->dio->write((int)(1000.0*TP/P)/1000.0f);
+        this->dio->write("\n");
+        this->dio->write("False Positive Rate: ");
+        this->dio->write((int)(1000.0*FP/N)/1000.0f);
+        this->dio->write("\n");
     }
 
     static vector<string> strSplit(string string1, char delim) {
