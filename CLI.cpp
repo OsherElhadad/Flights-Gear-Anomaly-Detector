@@ -28,8 +28,8 @@ void CLI::start() {
     Info* sharedInfo = new Info();
     int userInput;
     do {
-        this->dio->write("Welcome to the Anomaly Detection Server.");
-        this->dio->write("Please choose an option:");
+        this->dio->write("Welcome to the Anomaly Detection Server.\n");
+        this->dio->write("Please choose an option:\n");
         int size = this->commands.size();
 
         // write every command description

@@ -49,7 +49,7 @@ class StandardIO: public DefaultIO {
     }
 
     void write(string text) override {
-        cout << text << endl;
+        cout << text;
     }
 
     void write(float f) override {
@@ -121,9 +121,9 @@ public:
 
 class UploadTimeSeriesCommand: public Command {
 public:
-    UploadTimeSeriesCommand(DefaultIO* dio):Command(dio, "upload a time series csv file"){}
+    UploadTimeSeriesCommand(DefaultIO* dio):Command(dio, "upload a time series csv file\n"){}
     void execute(Info* info) override {
-        this->dio->write("Please upload your local train CSV file.");
+        this->dio->write("Please upload your local train CSV file.\n");
 
         // read csv data from client
         string csvData = this->dio->readFileData();
@@ -134,9 +134,9 @@ public:
         this->dio->CreateFile(fileNameLearn, csvData);
         info->setCSVfileNameLearn(fileNameLearn);
 
-        this->dio->write("Upload complete.");
+        this->dio->write("Upload complete.\n");
 
-        this->dio->write("Please upload your local test CSV file.");
+        this->dio->write("Please upload your local test CSV file.\n");
 
         // read csv data from client
         csvData = this->dio->readFileData();
@@ -147,23 +147,23 @@ public:
         this->dio->CreateFile(fileNameDetect, csvData);
         info->setCSVfileNameDetect(fileNameDetect);
 
-        this->dio->write("Upload complete.");
+        this->dio->write("Upload complete.\n");
     }
 };
 
 class ThresholdCommand: public Command {
 public:
-    ThresholdCommand(DefaultIO* dio):Command(dio, "algorithm settings"){}
+    ThresholdCommand(DefaultIO* dio):Command(dio, "algorithm settings\n"){}
     void execute(Info* info) override {
         string currentThreshold = std::to_string(info->getThreshold());
-        this->dio->write("The current correlation threshold is " + currentThreshold);
+        this->dio->write("The current correlation threshold is " + currentThreshold + "\n");
         float input = -1;
 
         // get new threshold from client until it is a valid one
         while (input < 0 || input > 1) {
             this->dio->read(&input);
             if (input < 0 || input > 1)
-                this->dio->write("please choose a value between 0 and 1.");
+                this->dio->write("please choose a value between 0 and 1.\n");
         }
 
         // set new threshold
@@ -173,35 +173,35 @@ public:
 
 class DetectAnomaliesCommand: public Command {
 public:
-    DetectAnomaliesCommand(DefaultIO* dio):Command(dio, "detect anomalies"){}
+    DetectAnomaliesCommand(DefaultIO* dio):Command(dio, "detect anomalies\n"){}
     void execute(Info* info) override {
         info->learnNormal();
         info->detect();
-        this->dio->write("anomaly detection complete.");
+        this->dio->write("anomaly detection complete.\n");
     }
 };
 
 class DisplayAnomaliesCommand: public Command {
 public:
-    DisplayAnomaliesCommand(DefaultIO* dio):Command(dio, "display results"){}
+    DisplayAnomaliesCommand(DefaultIO* dio):Command(dio, "display results\n"){}
     void execute(Info* info) override {
         vector<AnomalyReport> reportVector = info->getReportVector();
         for (AnomalyReport& ar : reportVector) {
             this->dio->write(to_string(ar.timeStep) + "\t" + ar.description);
         }
-        this->dio->write("Done.");
+        this->dio->write("Done.\n");
     }
 };
 
 class UploadAnomaliesAndAnalyzeCommand: public Command {
 public:
-    UploadAnomaliesAndAnalyzeCommand(DefaultIO* dio):Command(dio, "upload anomalies and analyze results"){}
+    UploadAnomaliesAndAnalyzeCommand(DefaultIO* dio):Command(dio, "upload anomalies and analyze results\n"){}
     void execute(Info* info) override {
-        this->dio->write("Please upload your local train CSV file.");
+        this->dio->write("Please upload your local train CSV file.\n");
 
         // read csv data from client
         string csvData = this->dio->readFileData();
-        this->dio->write("Upload complete.");
+        this->dio->write("Upload complete.\n");
 
         map<string, vector<string>> cfReported = map<string, vector<string>>();
         vector<AnomalyReport> reportVector = info->getReportVector();
@@ -265,9 +265,9 @@ public:
         }
         std::ostringstream strStream;
         strStream << fixed << setprecision(3)  << ((float) TP / (float) P);
-        this->dio->write("True Positive Rate: " + strStream.str());
+        this->dio->write("True Positive Rate: " + strStream.str() + "\n");
         strStream << fixed << setprecision(3)  << ((float) FP / (float) N);
-        this->dio->write("False Positive Rate: " + strStream.str());
+        this->dio->write("False Positive Rate: " + strStream.str() + "\n");
     }
 
     static vector<string> strSplit(string string1, char delim) {
@@ -283,7 +283,7 @@ public:
 
 class ExitCommand: public Command {
 public:
-    ExitCommand(DefaultIO* dio):Command(dio, "exit"){}
+    ExitCommand(DefaultIO* dio):Command(dio, "exit\n"){}
     void execute(Info* info) override {}
 };
 
