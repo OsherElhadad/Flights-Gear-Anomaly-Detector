@@ -62,9 +62,14 @@ public:
         return cf;
     }
 
+    // getter - return the threshold value
+    float getThreshold() const {
+        return this->threshold;
+    }
+
     // setter - set the threshold value
     void setThreshold(float _threshold) {
-        threshold = _threshold;
+        this->threshold = _threshold;
     }
 
 protected:

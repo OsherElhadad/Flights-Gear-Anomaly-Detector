@@ -26,19 +26,21 @@ void CLI::createCommands() {
 // starts the interaction with the user
 void CLI::start() {
     Info* sharedInfo = new Info();
-    sharedInfo->setThreshold(0.9);
     int userInput;
     do {
-        this->dio->write("Welcome to the Anomaly Detection Server.\n");
-        this->dio->write("Please choose an option:\n");
+        this->dio->write("Welcome to the Anomaly Detection Server.");
+        this->dio->write("Please choose an option:");
         int size = this->commands.size();
 
         // write every command description
         for (int i = 0; i < size; ++i) {
             this->dio->write(i + 1);
-            this->dio->write(". " + commands.at(i)->getDescription() + "\n");
+            this->dio->write(". " + commands.at(i)->getDescription());
         }
         userInput = stoi(this->dio->read());
+        while (userInput > 6 || userInput < 1) {
+            userInput = stoi(this->dio->read());
+        }
 
         // runs the chosen command
         this->commands.at(userInput - 1)->execute(sharedInfo);
