@@ -41,6 +41,7 @@ void CLI::start() {
         // runs the chosen command
         this->commands.at(userInput - 1)->execute(sharedInfo);
     } while (userInput != 6);
+    delete sharedInfo;
 }
 
 // destructor
