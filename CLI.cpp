@@ -35,7 +35,7 @@ void CLI::start() {
         // write every command description
         for (int i = 0; i < size; ++i) {
             this->dio->write(i + 1);
-            this->dio->write(". " + commands.at(i)->getDescription());
+            this->dio->write("." + commands.at(i)->getDescription());
         }
         userInput = stoi(this->dio->read());
         while (userInput > 6 || userInput < 1) {
