@@ -11,6 +11,9 @@
 
 #include <thread>
 #include <netinet/in.h>
+#include <signal.h>
+#include <unistd.h>
+#include <iostream>
 
 using namespace std;
 
@@ -39,6 +42,7 @@ class Server {
     int fd;
     sockaddr_in client;
     sockaddr_in server;
+    volatile bool stopping;
 
 public:
     Server(int port) throw (const char*);
