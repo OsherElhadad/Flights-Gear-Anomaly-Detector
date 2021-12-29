@@ -81,18 +81,34 @@ public:
     }
 };
 
-// implement on Server.cpp
+// the server has a socket and can start listening up to 5 clients at the same time
 class Server {
-    thread* t; // the thread to run the start() method in
+
+    // the server start listening on that thread
+    thread* t;
+
+    // the file descriptor of the socket
     int fd;
+
+    // the client and server socket address
     sockaddr_in client;
     sockaddr_in server;
+
+    // a boolean variable that stops the thread t
     volatile bool stopping;
 
 public:
+
+    // constructor - create the server socket
     Server(int port) throw (const char*);
-    virtual ~Server();
+
+    // destructor
+    virtual ~Server() {};
+
+    // start a new thread that the server listen on, and listen up to 5 clients at the same time
     void start(ClientHandler& ch)throw(const char*);
+
+    // stop the thread t (in start)
     void stop();
 };
 
