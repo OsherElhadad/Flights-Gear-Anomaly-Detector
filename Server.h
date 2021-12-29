@@ -95,14 +95,14 @@ public:
 class Server {
 
     // the server start listening on that thread
-    thread* t;
+    thread* t{};
 
     // the file descriptor of the socket
     int fd;
 
     // the client and server socket address
-    sockaddr_in client;
-    sockaddr_in server;
+    sockaddr_in client{};
+    sockaddr_in server{};
 
     // a boolean variable that stops the thread t
     volatile bool stopping;
