@@ -12,7 +12,7 @@
 #define EPSILON_BASE 10
 
 // returns the average of the array's members
-float avg(float* x, int size) {
+float avg(float* x, int size) noexcept(false) {
     // checks if the array size is a positive number
     if(size <= EMPTY_ARRAY) {
         throw "Size must be positive!";
@@ -28,7 +28,7 @@ float avg(float* x, int size) {
 }
 
 // returns the variance of X
-float var(float* x, int size) {
+float var(float* x, int size) noexcept(false) {
     // checks if the array size is a positive number
     if(size <= EMPTY_ARRAY) {
         throw "Size must be positive!";
@@ -48,7 +48,7 @@ float var(float* x, int size) {
 }
 
 // returns the covariance of X and Y
-float cov(float* x, float* y, int size) {
+float cov(float* x, float* y, int size) noexcept(false) {
     // checks if the array size is a positive number
     if(size <= EMPTY_ARRAY) {
         throw "Size must be positive!";
@@ -81,7 +81,7 @@ void fill_x_and_y_arrays(Point** points, float* x, float* y, int size) {
 }
 
 // performs a linear regression and returns the line equation
-Line linear_reg(Point** points, int size) {
+Line linear_reg(Point** points, int size) noexcept(false) {
     float epsilon = powf(EPSILON_BASE, EPSILON_POW);
     // checks if the array size is a positive number
     if(size <= EMPTY_ARRAY) {
@@ -108,7 +108,7 @@ Line linear_reg(Point** points, int size) {
 }
 
 // returns the deviation between point p and the line equation of the points
-float dev(Point p, Point** points, int size) {
+float dev(Point p, Point** points, int size) noexcept(false) {
     // checks if the array size is a positive number
     if(size <= EMPTY_ARRAY) {
         throw "Size must be positive!";

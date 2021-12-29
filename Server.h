@@ -110,13 +110,13 @@ class Server {
 public:
 
     // constructor - create the server socket
-    explicit Server(int port) throw (const char*);
+    explicit Server(int port) noexcept(false);
 
     // destructor
-    virtual ~Server() = default;;
+    virtual ~Server() = default;
 
     // start a new thread that the server listen on, and listen up to 5 clients at the same time
-    void start(ClientHandler& ch)throw(const char*);
+    void start(ClientHandler& ch) noexcept(false);
 
     // stop the thread t (in start)
     void stop();

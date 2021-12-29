@@ -8,7 +8,7 @@
 #include "Server.h"
 
 // constructor - create the server socket
-Server::Server(int port) throw (const char*) {
+Server::Server(int port) noexcept(false) {
 
     // create a socket for the server
     this->fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -29,7 +29,7 @@ Server::Server(int port) throw (const char*) {
 }
 
 // start a new thread that the server listen on, and listen up to 5 clients at the same time
-void Server::start(ClientHandler& ch) throw(const char*) {
+void Server::start(ClientHandler& ch) noexcept(false) {
     this->t = new thread([&ch, this]() {
         vector<thread*> tVec;
         bool error = false;
@@ -48,6 +48,7 @@ void Server::start(ClientHandler& ch) throw(const char*) {
                 int fdC = accept(this->fd, (struct sockaddr *) &this->client, &cSize);
                 if (fdC < 0) {
                     error = true;
+                    break;
                 } else {
 
                     // create thread for the new client
