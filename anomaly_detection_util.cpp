@@ -5,14 +5,14 @@
  * Author: Osher Elhadad, 318969748
  */
 
-#include <math.h>
+#include <cmath>
 #include "anomaly_detection_util.h"
 #define EMPTY_ARRAY 0
 #define EPSILON_POW -10
 #define EPSILON_BASE 10
 
 // returns the average of the array's members
-float avg(float* x, int size) noexcept(false) {
+float avg(const float* x, int size) noexcept(false) {
     // checks if the array size is a positive number
     if(size <= EMPTY_ARRAY) {
         throw "Size must be positive!";
