@@ -8,7 +8,7 @@
 #define COMMANDS_H_
 
 #include<iostream>
-#include <string.h>
+#include <cstring>
 #include <fstream>
 #include <vector>
 #include <iomanip>
@@ -33,7 +33,7 @@ public:
     virtual void read(float* f)=0;
 
     // destructor
-    virtual ~DefaultIO(){}
+    virtual ~DefaultIO()= default;
 
     // read a csv data and return string containing this data
     string readFileData() {
@@ -50,8 +50,8 @@ public:
     }
 
     // create a file with name "fileName" containing "data"
-    void CreateFile(const string& fileName, const string& data) {
-        std:ofstream outfile {fileName};
+    static void CreateFile(const string& fileName, const string& data) {
+        ofstream outfile {fileName};
         outfile << data;
     }
 };
@@ -72,7 +72,7 @@ class StandardIO: public DefaultIO {
         cout << f;
     }
 
-    void read(float* f) {
+    void read(float* f) override{
         cin >> *f;
     }
 };
@@ -100,7 +100,7 @@ public:
     virtual void execute(Info* info)=0;
 
     // destructor
-    virtual ~Command(){}
+    virtual ~Command()= default;
 
     // description getter
     string getDescription() const {
@@ -116,7 +116,7 @@ class UploadTimeSeriesCommand: public Command {
 public:
 
     // constructor
-    UploadTimeSeriesCommand(DefaultIO* dio):Command(dio, "upload a time series csv file\n"){}
+    explicit UploadTimeSeriesCommand(DefaultIO* dio):Command(dio, "upload a time series csv file\n"){}
 
     // creates the csv files and update the info files names
     void execute(Info* info) override {
@@ -127,7 +127,7 @@ public:
         string fileNameLearn = "anomalyTrain.csv";
 
         // create csv file
-        this->dio->CreateFile(fileNameLearn, csvData);
+        DefaultIO::CreateFile(fileNameLearn, csvData);
         info->CSVFileNameLearn = fileNameLearn;
         this->dio->write("Upload complete.\n");
         this->dio->write("Please upload your local test CSV file.\n");
@@ -137,7 +137,7 @@ public:
         string fileNameDetect = "anomalyTest.csv";
 
         // create csv file
-        this->dio->CreateFile(fileNameDetect, csvData);
+        DefaultIO::CreateFile(fileNameDetect, csvData);
         info->CSVFileNameDetect = fileNameDetect;
         this->dio->write("Upload complete.\n");
     }
@@ -150,7 +150,7 @@ class ThresholdCommand: public Command {
 public:
 
     // constructor
-    ThresholdCommand(DefaultIO* dio):Command(dio, "algorithm settings\n"){}
+    explicit ThresholdCommand(DefaultIO* dio):Command(dio, "algorithm settings\n"){}
 
     // update new threshold in info according to user input
     void execute(Info* info) override {
@@ -179,7 +179,7 @@ class DetectAnomaliesCommand: public Command {
 public:
 
     // constructor
-    DetectAnomaliesCommand(DefaultIO* dio):Command(dio, "detect anomalies\n"){}
+    explicit DetectAnomaliesCommand(DefaultIO* dio):Command(dio, "detect anomalies\n"){}
 
     // learn and detect anomalies
     void execute(Info* info) override {
@@ -203,7 +203,7 @@ class DisplayAnomaliesCommand: public Command {
 public:
 
     // constructor
-    DisplayAnomaliesCommand(DefaultIO* dio):Command(dio, "display results\n"){}
+    explicit DisplayAnomaliesCommand(DefaultIO* dio):Command(dio, "display results\n"){}
 
     // display every anomaly in a new line
     void execute(Info* info) override {
@@ -225,7 +225,8 @@ class UploadAnomaliesAndAnalyzeCommand: public Command {
 public:
 
     // constructor
-    UploadAnomaliesAndAnalyzeCommand(DefaultIO* dio):Command(dio, "upload anomalies and analyze results\n"){}
+    explicit UploadAnomaliesAndAnalyzeCommand(DefaultIO* dio):
+    Command(dio, "upload anomalies and analyze results\n"){}
 
     // calculate and display true positive rate and false positive rate
     void execute(Info* info) override {
@@ -247,7 +248,7 @@ public:
                 cfReported[ar.description] = vector<string>();
                 cfReported[ar.description].push_back(to_string(ar.timeStep));
             } else {
-                int exist = cfReported.find(ar.description)->second.back().find("-");
+                int exist = cfReported.find(ar.description)->second.back().find('-');
 
                 // checks if the last timeStep without '-'
                 if (exist < 0) {
@@ -332,7 +333,7 @@ public:
     }
 
     // split string to vector of substrings from the delim
-    static vector<string> strSplit(string string1, char delim) {
+    static vector<string> strSplit(const string& string1, char delim) {
         vector<string> result = vector<string>();
         auto ss = stringstream{string1};
 
@@ -350,7 +351,7 @@ class ExitCommand: public Command {
 public:
 
     // constructor
-    ExitCommand(DefaultIO* dio):Command(dio, "exit\n"){}
+    explicit ExitCommand(DefaultIO* dio):Command(dio, "exit\n"){}
     void execute(Info* info) override {}
 };
 
