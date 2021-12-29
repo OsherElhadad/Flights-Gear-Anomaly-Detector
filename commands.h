@@ -229,7 +229,7 @@ public:
 
     // calculate and display true positive rate and false positive rate
     void execute(Info* info) override {
-        this->dio->write("Please upload your local train CSV file.\n");
+        this->dio->write("Please upload your local anomalies file.\n");
 
         // read csv data from client
         string csvData = this->dio->readFileData();
