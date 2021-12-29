@@ -11,7 +11,7 @@
 #include <thread>
 #include <pthread.h>
 #include <netinet/in.h>
-#include <signal.h>
+#include <csignal>
 #include <unistd.h>
 #include <iostream>
 #include "commands.h"
@@ -25,9 +25,10 @@ class SocketIO: public DefaultIO {
 public:
 
     // constructor
-    SocketIO(int id):clientID(id){};
+    explicit SocketIO(int id):clientID(id){};
 
     // read a string from client using socket
+
     string read() override {
         char temp = 0;
         string data;
@@ -59,7 +60,7 @@ public:
     }
 
     // read a float from client using socket
-    void read(float* f) {
+    void read(float* f) override{
         float temp;
         recv(this->clientID, &temp, sizeof(float), 0);
         *f = temp;
@@ -80,7 +81,7 @@ class AnomalyDetectionHandler:public ClientHandler {
 public:
 
     // handles with the received client and active anomaly detection program
-    virtual void handle(int clientID){
+    void handle(int clientID) override{
         auto* io = new SocketIO(clientID);
         CLI* cli = new CLI(io);
         (*cli).start();
@@ -109,10 +110,10 @@ class Server {
 public:
 
     // constructor - create the server socket
-    Server(int port) throw (const char*);
+    explicit Server(int port) throw (const char*);
 
     // destructor
-    virtual ~Server() {};
+    virtual ~Server() = default;;
 
     // start a new thread that the server listen on, and listen up to 5 clients at the same time
     void start(ClientHandler& ch)throw(const char*);
