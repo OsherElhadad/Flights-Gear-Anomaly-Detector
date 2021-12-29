@@ -36,22 +36,24 @@ void Server::start(ClientHandler& ch) throw(const char*) {
         while(!this->stopping) {
 
             // set time out of 2 seconds for accept a client socket
-            struct timeval tv;
+            struct timeval tv{};
             fd_set fdSet;
             FD_ZERO(&fdSet);
             FD_SET(fd, &fdSet);
             tv.tv_sec = (long)2;
             tv.tv_usec = 0;
-            int iResult = select(this->fd + 1, &fdSet, (fd_set *) 0, (fd_set *) 0, &tv);
+            int iResult = select(this->fd + 1, &fdSet, (fd_set *) nullptr,
+                                 (fd_set *) nullptr, &tv);
             if(iResult > 0) {
                 socklen_t cSize = sizeof(this->client);
                 int fdC = accept(this->fd, (struct sockaddr *) &this->client, &cSize);
                 if (fdC < 0) {
                     error = true;
+                    break;
                 } else {
 
                     // create thread for the new client
-                    thread* cl = new thread([&fdC, &ch]() {
+                    auto* cl = new thread([&fdC, &ch]() {
                         ch.handle(fdC);
                         close(fdC);
                     });
@@ -77,6 +79,7 @@ void Server::stop(){
     this->stopping = true;
 
     // wait until t is closed
-    this->t->join();
+    if (this->t)
+        this->t->join();
     delete this->t;
 }
