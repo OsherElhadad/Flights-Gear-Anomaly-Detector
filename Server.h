@@ -1,8 +1,8 @@
 /*
  * Server.h
  *
- *  Created on: Dec 13, 2020
- *      Author: Eli
+ * Author: Yossi Maatook, 208641472
+ * Author: Osher Elhadad, 318969748
  */
 
 #ifndef SERVER_H_
