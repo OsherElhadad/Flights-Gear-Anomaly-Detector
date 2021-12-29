@@ -17,7 +17,7 @@
 
 
 // returns the average of the array's members
-float avg(float* x, int size) noexcept(false);
+float avg(const float* x, int size) noexcept(false);
 
 // returns the variance of X
 float var(float* x, int size) noexcept(false);
@@ -40,7 +40,7 @@ public:
     Line(float a, float b): a(a), b(b) {}
 
     // evaluate the y value at the given x
-	float f(float x) {
+	float f(float x) const {
 		return a * x + b;
 	}
 };
